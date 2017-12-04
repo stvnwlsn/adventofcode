@@ -28,11 +28,22 @@ sub checksum {
         my $min = min@{$_};
         $checksum += $max - $min;
     }
-    say $checksum;
     return $checksum;
 }
 
+my @data;
 
-# say "Puzzle answer is: ", matched_digits_sum(\@puzzle_input);
+my $filename = 'data_day2';
+if (open(my $fh, '<:encoding(UTF-8)', $filename)){
+    while (my $row = <$fh>){
+        my @row_array;
+        chomp $row;
+        @row_array = split ' ', $row;
+        push @data, \@row_array;
+    }
+}
+else {
+    warn "Could not open file '$filename' $!";
+}
 
-
+say "Puzzle answer is: ", checksum(\@data);
