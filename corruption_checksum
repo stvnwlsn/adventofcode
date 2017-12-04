@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+# http://adventofcode.com/2017/day/2 <- link to problem
+
+use strict;
+use warnings;
+use List::Util qw( max min );
+use feature qw( say );
+
+use Test::More;
+
+my @test_data = (
+    [ 5, 1, 9, 5],
+    [ 7, 5, 3],
+    [ 2, 4, 6, 8]
+    );
+
+is( checksum( \@test_data ), 18 );
+
+done_testing();
+
+
+sub checksum {
+    my $input = shift;
+    my @input = @{ $input };
+    my $checksum;
+    foreach (@input){
+        my $max = max@{$_};
+        my $min = min@{$_};
+        $checksum += $max - $min;
+    }
+    say $checksum;
+    return $checksum;
+}
+
+
+# say "Puzzle answer is: ", matched_digits_sum(\@puzzle_input);
+
+
