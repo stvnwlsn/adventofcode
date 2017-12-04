@@ -40,10 +40,8 @@ sub matched_digits_sum {
         else {
             $compare_i = $i - $length + $step;
         }
-        if ($i < $length){
-            if ($input[$i] == $input[$compare_i]){
-                push @matched, $input[$i];
-            }
+        if ($input[$i] == $input[$compare_i]){
+            push @matched, $input[$i];
         }
         $i++;
     }
