@@ -1,0 +1,59 @@
+#!/usr/bin/env perl
+# http://adventofcode.com/2017/day/2 <- link to problem
+
+use strict;
+use warnings;
+use List::Util qw( max min );
+use feature qw( say );
+
+use Test::More;
+
+my @test_data = (
+    [ 5, 9, 2, 8],
+    [ 9, 4, 7, 3],
+    [ 3, 8, 6, 5]
+    );
+
+is( checksum( \@test_data ), 9 );
+
+done_testing();
+
+
+sub checksum {
+    my $input = shift;
+    my @input = @{ $input };
+    my $checksum = 0;
+    foreach (@input){
+        my @row = sort {$b <=> $a} @{ $_ };
+        my $length = @{$_};
+        my $i = 0;
+        while ($i < $length - 1){
+            my $j = $length - 1;
+            while ($i < $j){
+                if (($row[$i] % $row[$j]) == 0){
+                    $checksum += ($row[$i] / $row[$j]);
+                }
+                $j--;
+            }
+            $i++;
+        }
+    }
+    return $checksum;
+}
+
+my @data;
+
+my $filename = 'data_day2';
+if (open(my $fh, '<:encoding(UTF-8)', $filename)){
+    while (my $row = <$fh>){
+        my @row_array;
+        chomp $row;
+        @row_array = split ' ', $row;
+        push @data, \@row_array;
+    }
+}
+else {
+    warn "Could not open file '$filename' $!";
+}
+
+say "Puzzle answer is: ", checksum(\@data);
