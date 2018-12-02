@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# http://adventofcode.com/2017/day/2 <- link to problem
+# http://adventofcode.com/2017/day/4 <- link to problem
 
 use strict;
 use warnings;
