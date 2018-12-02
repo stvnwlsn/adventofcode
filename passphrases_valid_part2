@@ -1,0 +1,62 @@
+#!/usr/bin/env perl
+# http://adventofcode.com/2017/day/4 <- link to problem
+
+use strict;
+use warnings;
+use feature qw( say );
+use List::MoreUtils qw/ uniq /;
+use Test::More;
+
+my @test_data = (
+    [ "aa", "bb", "dd", "ee", 1 ],
+    [ "aa", "bb", "cc", "dd", "aa", 0],
+    [ "aa", "bb", "cc", "dd", "aaa", 1]
+    );
+
+foreach my $test_row (@test_data){
+    my @input = @{$test_row};
+    pop @input;
+    is( valid_passphrase( \@input ), @{$test_row}[-1] );
+}
+
+done_testing();
+
+sub valid_passphrase {
+    my $input = shift;
+    my @input = @{ $input };
+    my $length = @input;
+    my $unique = uniq (@input);
+    my $valid = 0;
+    if ($length == $unique){
+        $valid++;
+    }
+    return $valid;
+}
+
+my @data;
+
+my $filename = 'data_day4';
+if (open(my $fh, '<:encoding(UTF-8)', $filename)){
+    while (my $row = <$fh>){
+        my @row_array;
+        chomp $row;
+        @row_array = split ' ', $row;
+        push @data, \@row_array;
+    }
+}
+else {
+    warn "Could not open file '$filename' $!";
+}
+
+sub total_valid_passphrases {
+    my $input = shift;
+    my @input = @{ $input };
+    my $total = 0;
+    foreach my $row (@input){
+        $total += valid_passphrase(\@{ $row });
+    }
+    return $total;
+}
+
+
+say "Puzzle answer is: ", total_valid_passphrases(\@data);
