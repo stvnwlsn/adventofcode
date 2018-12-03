@@ -7,7 +7,6 @@ use feature qw( say );
 my @data;
 my $sum = 0;
 my %freq;
-my @data_copy = @data;
 my $match = 0;
 my $filename = 'input.txt';
 
@@ -20,6 +19,8 @@ else {
     warn "Could not open file '$filename' $!";
 }
 
+my @data_copy = @data;
+
 while(!$match){
     if(!@data){
         @data = @data_copy;
@@ -30,5 +31,5 @@ while(!$match){
     } else {
         $freq{$sum} = 1;
     }
-
+}
 say "Puzzle answer is: ", $sum;

@@ -9,6 +9,7 @@ my $filename = 'input.txt';
 
 if (open(my $fh, '<:encoding(UTF-8)', $filename)){
     while (my $row = <$fh>){
+        chomp $row;
         push @data, $row;
     }
 }
