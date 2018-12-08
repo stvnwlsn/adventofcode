@@ -3,8 +3,7 @@
 use strict;
 use warnings;
 use feature qw( say );
-use Graph;
-use Test::More;
+use List::MoreUtils qw(uniq);
 
 # Part 1 tests
 my @td = (
@@ -17,9 +16,6 @@ my @td = (
     "Step F must be finished before step E can begin."
     );
 
-# cmp_ok(  );
-
-# done_testing();
 
 my @data;
 my $filename = 'input.txt';
@@ -36,30 +32,71 @@ else {
 }
 
 
-my %instructions;
-
-
-foreach my $item (@td){
-    $item =~ /\b([A-Z])\b.*\b([A-Z])\b/g;
-    $instructions{$1} = [$2];
-}
-
-
-sub build_graph{
-    my $g = shift;
-    my $data = shift;
-    my @data = @{$data};
-    my @edges = ();
-    foreach my $instruction (@data){
-        $instruction =~ /\b([A-Z])\b.*\b([A-Z])\b/g;
-        push @edges, [$1, $2];
+sub get_instructions{
+    my $ref_data = shift;
+    my @data = @{ $ref_data };
+    my @instructions;
+    foreach my $item (@data){
+        $item =~ /\b([A-Z])\b.*\b([A-Z])\b/g;
+        push @instructions, $1.$2;
     }
-    sort {$b->[1] cmp $a->[1]} @edges;
-    $g->add_edges(@edges);
-    return $g;
+    return @instructions;
 }
 
-my $g = Graph->new;
-$g = build_graph($g, \@td);
-my @ts = $g->topological_sort;
-say @ts;
+sub get_blocked{
+    my ($instructions_ref) = shift;
+    my @instructions = @{ $instructions_ref };
+    my @step1;
+    @step1 = uniq map { substr($_, 1, 1) } @instructions;
+    return @step1;
+}
+
+sub get_next_instruction{
+    my ($instructions_ref, $blocked_ref) = @_;
+    my @instructions = @{ $instructions_ref };
+    my @blocked = get_blocked(\@instructions);
+    my @step2 = uniq map { substr($_, 0, 1) } @instructions;
+    my %lookup;
+    my @available;
+    my $instruction;
+    my @available_instructions;
+    @lookup{@blocked} = ();
+    foreach (@step2) {
+        push(@available, $_) unless exists $lookup{$_};
+    }
+    %lookup = ();
+    @lookup{@available} = ();
+    foreach(@instructions){
+        push(@available_instructions, $_) if exists $lookup{substr($_, 0, 1)};
+    }
+    @available_instructions = sort @available_instructions;
+    return shift @available_instructions;
+}
+
+sub remove_string_from_array{
+    my $s = shift;
+    my $ref_array = shift;
+    my @array = @{ $ref_array };
+    my @results;
+    @results = grep { $_ ne $s } @array;
+}
+
+sub print_order_steps_completed{
+    my $ref_data = shift;
+    my @data_p1 = @{ $ref_data };
+    my @instructions = get_instructions(\@data_p1);
+    my @completed;
+    my $instruction;
+    while (@instructions){
+        my @blocked = get_blocked(\@instructions);
+        $instruction = get_next_instruction(\@instructions);
+        push (@completed, substr($instruction, 0, 1));
+        @instructions = remove_string_from_array($instruction, \@instructions);
+    }
+    push (@completed, substr($instruction, 1, 1));
+    say uniq @completed;
+}
+
+
+print_order_steps_completed(\@td);
+print_order_steps_completed(\@data);
