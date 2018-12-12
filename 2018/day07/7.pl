@@ -52,7 +52,7 @@ sub get_blocked{
 }
 
 sub get_next_instruction{
-    my ($instructions_ref, $blocked_ref) = @_;
+    my $instructions_ref = shift;
     my @instructions = @{ $instructions_ref };
     my @blocked = get_blocked(\@instructions);
     my @step2 = uniq map { substr($_, 0, 1) } @instructions;
@@ -88,7 +88,6 @@ sub print_order_steps_completed{
     my @completed;
     my $instruction;
     while (@instructions){
-        my @blocked = get_blocked(\@instructions);
         $instruction = get_next_instruction(\@instructions);
         push (@completed, substr($instruction, 0, 1));
         @instructions = remove_string_from_array($instruction, \@instructions);
