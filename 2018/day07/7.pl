@@ -44,7 +44,7 @@ sub get_instructions{
 }
 
 sub get_blocked{
-    my ($instructions_ref) = shift;
+    my $instructions_ref = shift;
     my @instructions = @{ $instructions_ref };
     my @step1;
     @step1 = uniq map { substr($_, 1, 1) } @instructions;
@@ -58,7 +58,6 @@ sub get_next_instruction{
     my @step2 = uniq map { substr($_, 0, 1) } @instructions;
     my %lookup;
     my @available;
-    my $instruction;
     my @available_instructions;
     @lookup{@blocked} = ();
     foreach (@step2) {
